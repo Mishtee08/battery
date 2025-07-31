@@ -192,13 +192,6 @@ if st.session_state.cells_data:
         
         # Add max voltage line
         max_voltages = [cell['max_voltage'] for cell in st.session_state.cells_data.values()]
-        fig_voltage.add_trace(go.Scatter(
-            x=cell_names,
-            y=max_voltages,
-            mode='lines+markers',
-            line=dict(color='red', dash='dash'),
-            name='Max Voltage'
-        ))
         
         fig_voltage.update_layout(
             title="Cell Voltage Comparison",
