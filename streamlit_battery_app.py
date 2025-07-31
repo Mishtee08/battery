@@ -193,14 +193,7 @@ if st.session_state.cells_data:
         # Add max voltage line
         max_voltages = [cell['max_voltage'] for cell in st.session_state.cells_data.values()]
         
-        fig_voltage.update_layout(
-            title="Cell Voltage Comparison",
-            xaxis_title="Cell ID",
-            yaxis_title="Voltage (V)",
-            hovermode='x'
-        )
-        
-        st.plotly_chart(fig_voltage, use_container_width=True)
+       
     
     with tab2:
         st.header("📈 Advanced Analytics")
