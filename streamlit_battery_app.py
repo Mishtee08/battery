@@ -425,14 +425,7 @@ if st.session_state.cells_data:
                 x_var = st.selectbox("X Variable", df_corr.columns, index=0)
             with col2:
                 y_var = st.selectbox("Y Variable", df_corr.columns, index=1)
-            
-            fig_scatter = px.scatter(
-                df_corr, x=x_var, y=y_var,
-                title=f"{x_var} vs {y_var}",
-                trendline="ols"
-            )
-            
-            st.plotly_chart(fig_scatter, use_container_width=True)
+    
             
             # Correlation insights
             st.subheader("🔍 Key Insights")
