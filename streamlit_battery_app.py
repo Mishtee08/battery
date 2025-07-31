@@ -204,40 +204,21 @@ if st.session_state.cells_data:
         temps = [cell['temp'] for cell in st.session_state.cells_data.values()]
         voltages = [cell['voltage'] for cell in st.session_state.cells_data.values()]
         
-        fig_analytics.add_trace(
-            go.Scatter(x=temps, y=voltages, mode='markers', 
-                      marker=dict(size=10, color='blue'),
-                      name='Temp vs Voltage'),
-            row=1, col=1
-        )
+       
         
         # Capacity pie chart
         cell_names = [key.split('_')[-1] for key in st.session_state.cells_data.keys()]
         capacities = [cell['capacity'] for cell in st.session_state.cells_data.values()]
         
-        fig_analytics.add_trace(
-            go.Pie(labels=cell_names, values=capacities, name="Capacity"),
-            row=1, col=2
-        )
         
         # SOC bar chart
         socs = [cell['soc'] for cell in st.session_state.cells_data.values()]
-        
-        fig_analytics.add_trace(
-            go.Bar(x=list(range(len(cell_names))), y=socs, 
-                   marker_color='green', name='SOC'),
-            row=2, col=1
-        )
+      
         
         # Health indicator
         healths = [cell['health'] for cell in st.session_state.cells_data.values()]
         
-        fig_analytics.add_trace(
-            go.Scatter(x=list(range(len(cell_names))), y=healths,
-                      mode='lines+markers', line=dict(color='orange'),
-                      name='Health'),
-            row=2, col=2
-        )
+       
         
         fig_analytics.update_layout(height=600, showlegend=True)
         st.plotly_chart(fig_analytics, use_container_width=True)
