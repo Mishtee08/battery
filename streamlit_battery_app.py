@@ -327,8 +327,6 @@ if st.session_state.cells_data:
         
         # Real-time monitoring chart
         st.subheader("📊 Real-time SOC Monitoring")
-        
-        for cell_key, cell_data in st.session_state.cells_data.items():
     
     with tab4:
         st.header("📋 Detailed Data Table")
@@ -417,16 +415,6 @@ if st.session_state.cells_data:
             
             corr_matrix = df_corr.corr()
             
-            # Heatmap
-            fig_heatmap = px.imshow(
-                corr_matrix,
-                text_auto=True,
-                aspect="auto",
-                title="Correlation Matrix",
-                color_continuous_scale="RdBu_r"
-            )
-            
-            st.plotly_chart(fig_heatmap, use_container_width=True)
             
             # Pair plot
             st.subheader("📈 Pairwise Relationships")
