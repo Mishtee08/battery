@@ -189,7 +189,7 @@ if st.session_state.cells_data:
         cell_names = list(st.session_state.cells_data.keys())
         voltages = [cell['voltage'] for cell in st.session_state.cells_data.values()]
         
-            x=cell_names,
+            
             y=voltages,
             marker_color='lightblue',
             name='Current Voltage'
