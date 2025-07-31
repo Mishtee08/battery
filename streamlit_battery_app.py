@@ -198,14 +198,7 @@ if st.session_state.cells_data:
     with tab2:
         st.header("📈 Advanced Analytics")
         
-        # Create subplots
-        fig_analytics = make_subplots(
-            rows=2, cols=2,
-            subplot_titles=('Temperature vs Voltage', 'Capacity Distribution', 
-                          'State of Charge', 'Battery Health'),
-            specs=[[{"secondary_y": False}, {"type": "domain"}],
-                   [{"secondary_y": False}, {"secondary_y": False}]]
-        )
+        
         
         # Temperature vs Voltage scatter
         temps = [cell['temp'] for cell in st.session_state.cells_data.values()]
