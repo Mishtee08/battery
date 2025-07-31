@@ -217,11 +217,7 @@ if st.session_state.cells_data:
         
         # Health indicator
         healths = [cell['health'] for cell in st.session_state.cells_data.values()]
-        
-       
-        
-        fig_analytics.update_layout(height=600, showlegend=True)
-        st.plotly_chart(fig_analytics, use_container_width=True)
+
         
         # Performance metrics
         st.subheader("⚡ Performance Metrics")
@@ -241,40 +237,13 @@ if st.session_state.cells_data:
             
             values = [norm_voltage, norm_capacity, norm_temp, norm_soc, norm_health]
             
-            fig_radar = go.Figure()
-            fig_radar.add_trace(go.Scatterpolar(
-                r=values,
-                theta=categories,
-                fill='toself',
-                name='System Performance'
-            ))
-            
-            fig_radar.update_layout(
-                polar=dict(
-                    radialaxis=dict(
-                        visible=True,
-                        range=[0, 100]
-                    )),
-                showlegend=True,
-                title="System Performance Radar"
-            )
-            
-            st.plotly_chart(fig_radar, use_container_width=True)
-        
         with col2:
             # Cell type distribution
             type_counts = {}
             for cell in st.session_state.cells_data.values():
                 cell_type = cell['cell_type']
                 type_counts[cell_type] = type_counts.get(cell_type, 0) + 1
-            
-            fig_types = go.Figure(data=[
-                go.Pie(labels=list(type_counts.keys()), 
-                       values=list(type_counts.values()),
-                       hole=0.3)
-            ])
-            fig_types.update_layout(title="Cell Type Distribution")
-            st.plotly_chart(fig_types, use_container_width=True)
+        
     
     with tab3:
         st.header("🔋 Charging & Discharging Control")
