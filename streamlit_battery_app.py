@@ -185,7 +185,7 @@ if st.session_state.cells_data:
         # Voltage distribution
         st.subheader("⚡ Voltage Distribution")
         
-        fig_voltage = go.Figure()
+       
         cell_names = list(st.session_state.cells_data.keys())
         voltages = [cell['voltage'] for cell in st.session_state.cells_data.values()]
         
