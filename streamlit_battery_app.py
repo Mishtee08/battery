@@ -328,26 +328,7 @@ if st.session_state.cells_data:
         # Real-time monitoring chart
         st.subheader("📊 Real-time SOC Monitoring")
         
-        fig_soc = go.Figure()
-        
         for cell_key, cell_data in st.session_state.cells_data.items():
-            fig_soc.add_trace(go.Bar(
-                x=[cell_key],
-                y=[cell_data['soc']],
-                name=cell_key,
-                text=f"{cell_data['soc']}%",
-                textposition='auto'
-            ))
-        
-        fig_soc.update_layout(
-            title="State of Charge (SOC) by Cell",
-            xaxis_title="Cell ID",
-            yaxis_title="SOC (%)",
-            yaxis_range=[0, 100],
-            showlegend=False
-        )
-        
-        st.plotly_chart(fig_soc, use_container_width=True)
     
     with tab4:
         st.header("📋 Detailed Data Table")
