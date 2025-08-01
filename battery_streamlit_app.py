@@ -174,19 +174,175 @@ def main():
     
     # Sidebar
     with st.sidebar:
-        st.header("🎛️ Control Panel")
-        page = st.selectbox("Select Page", ["Cell Configuration", "Task Management", "Dashboard", "Data Visualization"])
+        st.header("🎛️ Quick Stats")
+        
+        # Display quick stats in sidebar
+        if st.session_state.cells_data:
+            st.metric("Total Cells", len(st.session_state.cells_data))
+            avg_temp = sum(cell['temp'] for cell in st.session_state.cells_data.values()) / len(st.session_state.cells_data)
+            st.metric("Avg Temperature", f"{avg_temp:.1f}°C")
+            total_capacity = sum(cell['capacity'] for cell in st.session_state.cells_data.values())
+            st.metric("Total Capacity", f"{total_capacity:.2f}Wh")
+        
+        if st.session_state.tasks_data:
+            st.metric("Active Tasks", len(st.session_state.tasks_data))
+        
+        st.markdown("---")
+        st.markdown("### 🔄 System Status")
+        if st.session_state.cells_data or st.session_state.tasks_data:
+            st.success("System Active")
+        else:
+            st.info("System Ready")
     
-    if page == "Cell Configuration":
+    # Initialize page state
+    if 'current_page' not in st.session_state:
+        st.session_state.current_page = "home"
+    
+    # Main navigation based on current page
+    if st.session_state.current_page == "home":
+        home_page()
+    elif st.session_state.current_page == "cell_config":
         cell_configuration_page()
-    elif page == "Task Management":
+    elif st.session_state.current_page == "task_management":
         task_management_page()
-    elif page == "Dashboard":
+    elif st.session_state.current_page == "dashboard":
         dashboard_page()
-    elif page == "Data Visualization":
+    elif st.session_state.current_page == "data_viz":
         data_visualization_page()
 
-def cell_configuration_page():
+def home_page():
+    """Main home page with navigation cards"""
+    
+    # Welcome section
+    st.markdown("""
+    <div style="text-align: center; margin: 2rem 0;">
+        <h2 style="color: #4a5568; margin-bottom: 1rem;">Welcome to Battery Management System</h2>
+        <p style="font-size: 1.1rem; color: #718096;">Choose an option below to get started with your battery management tasks</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Navigation cards
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Cell Configuration Card
+        st.markdown("""
+        <div class="nav-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 15px; color: white; margin: 1rem 0; text-align: center; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);">
+            <h3 style="margin-bottom: 1rem;">⚡ Cell Configuration</h3>
+            <p style="margin-bottom: 1.5rem; opacity: 0.9;">Set up and configure your battery cells with different types and parameters</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("🔋 Configure Cells", key="nav_cells", use_container_width=True, type="primary"):
+            st.session_state.current_page = "cell_config"
+            st.rerun()
+        
+        # Task Management Card
+        st.markdown("""
+        <div class="nav-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 2rem; border-radius: 15px; color: white; margin: 1rem 0; text-align: center; box-shadow: 0 8px 32px rgba(240, 147, 251, 0.3);">
+            <h3 style="margin-bottom: 1rem;">📋 Task Management</h3>
+            <p style="margin-bottom: 1.5rem; opacity: 0.9;">Create and manage tasks like CC_CV, IDLE, and CC_CD operations</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("📝 Manage Tasks", key="nav_tasks", use_container_width=True, type="primary"):
+            st.session_state.current_page = "task_management"
+            st.rerun()
+    
+    with col2:
+        # Dashboard Card
+        st.markdown("""
+        <div class="nav-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 15px; color: white; margin: 1rem 0; text-align: center; box-shadow: 0 8px 32px rgba(79, 172, 254, 0.3);">
+            <h3 style="margin-bottom: 1rem;">📊 System Dashboard</h3>
+            <p style="margin-bottom: 1.5rem; opacity: 0.9;">View system overview, metrics, and monitor your battery cells</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("📈 View Dashboard", key="nav_dashboard", use_container_width=True, type="primary"):
+            st.session_state.current_page = "dashboard"
+            st.rerun()
+        
+        # Data Visualization Card
+        st.markdown("""
+        <div class="nav-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 2rem; border-radius: 15px; color: white; margin: 1rem 0; text-align: center; box-shadow: 0 8px 32px rgba(250, 112, 154, 0.3);">
+            <h3 style="margin-bottom: 1rem;">📈 Data Visualization</h3>
+            <p style="margin-bottom: 1.5rem; opacity: 0.9;">Analyze data with interactive charts and visual representations</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("📊 Visualize Data", key="nav_dataviz", use_container_width=True, type="primary"):
+            st.session_state.current_page = "data_viz"
+            st.rerun()
+    
+    # Quick Actions Section
+    st.markdown("---")
+    st.subheader("🚀 Quick Actions")
+    
+    action_col1, action_col2, action_col3, action_col4 = st.columns(4)
+    
+    with action_col1:
+        if st.button("⚡ Quick Cell Setup", use_container_width=True):
+            # Quick setup with default values
+            st.session_state.cells_data = {}
+            for i in range(3):
+                cell_type = "lfp" if i % 2 == 0 else "li-ion"
+                cell_key = f"cell_{i+1}_{cell_type}"
+                st.session_state.cells_data[cell_key] = create_cell_data(cell_type, i+1)
+            st.success("✅ 3 cells created with default settings!")
+            time.sleep(1)
+            st.rerun()
+    
+    with action_col2:
+        if st.button("📋 Sample Tasks", use_container_width=True):
+            # Create sample tasks
+            st.session_state.tasks_data = {
+                "task_1": {"task_type": "CC_CV", "cc_cp": "5A", "cv_voltage": 3.6, "current": 2.0, "capacity": 100.0, "time_seconds": 3600},
+                "task_2": {"task_type": "IDLE", "time_seconds": 1800},
+                "task_3": {"task_type": "CC_CD", "cc_cp": "3A", "voltage": 3.2, "capacity": 80.0, "time_seconds": 2400}
+            }
+            st.success("✅ 3 sample tasks created!")
+            time.sleep(1)
+            st.rerun()
+    
+    with action_col3:
+        if st.button("🗑️ Clear All Data", use_container_width=True):
+            st.session_state.cells_data = {}
+            st.session_state.tasks_data = {}
+            st.success("✅ All data cleared!")
+            time.sleep(1)
+            st.rerun()
+    
+    with action_col4:
+        if st.button("🔄 Refresh Data", use_container_width=True):
+            # Refresh cell data with new random values
+            for cell_key, cell_data in st.session_state.cells_data.items():
+                cell_type = "lfp" if "lfp" in cell_key else "li-ion"
+                idx = int(cell_key.split('_')[1])
+                st.session_state.cells_data[cell_key] = create_cell_data(cell_type, idx)
+            st.success("✅ Cell data refreshed!")
+            time.sleep(1)
+            st.rerun()
+    
+    # System Status Overview
+    if st.session_state.cells_data or st.session_state.tasks_data:
+        st.markdown("---")
+        st.subheader("🎯 Current System Status")
+        
+        status_col1, status_col2, status_col3 = st.columns(3)
+        
+        with status_col1:
+            st.info(f"🔋 **Cells:** {len(st.session_state.cells_data)} configured")
+        
+        with status_col2:
+            st.info(f"📋 **Tasks:** {len(st.session_state.tasks_data)} active")
+        
+        with status_col3:
+            if st.session_state.cells_data and st.session_state.tasks_data:
+                st.success("✅ **System:** Ready for operation")
+            elif st.session_state.cells_data or st.session_state.tasks_data:
+                st.warning("⚠️ **System:** Partially configured")
+            else:
+                st.info("ℹ️ **System:** Awaiting configuration")
     st.header("⚡ Cell Configuration")
     
     col1, col2 = st.columns([2, 3])
@@ -240,6 +396,11 @@ def cell_configuration_page():
             st.info("No cells configured yet. Please add some cells using the form on the left.")
 
 def task_management_page():
+    # Back to home button
+    if st.button("🏠 Back to Home", key="back_from_tasks"):
+        st.session_state.current_page = "home"
+        st.rerun()
+    
     st.header("📋 Task Management")
     
     col1, col2 = st.columns([2, 3])
@@ -343,6 +504,11 @@ def task_management_page():
             st.info("No tasks created yet. Please add some tasks using the form on the left.")
 
 def dashboard_page():
+    # Back to home button
+    if st.button("🏠 Back to Home", key="back_from_dashboard"):
+        st.session_state.current_page = "home"
+        st.rerun()
+    
     st.header("📊 System Dashboard")
     
     if not st.session_state.cells_data and not st.session_state.tasks_data:
@@ -394,6 +560,11 @@ def dashboard_page():
                 st.write(f"- {task_type}: {count} tasks")
 
 def data_visualization_page():
+    # Back to home button
+    if st.button("🏠 Back to Home", key="back_from_dataviz"):
+        st.session_state.current_page = "home"
+        st.rerun()
+    
     st.header("📈 Data Visualization")
     
     if not st.session_state.cells_data:
